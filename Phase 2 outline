@@ -1,0 +1,108 @@
+
+Page
+1
+of 3
+CS3365 – Group Project: Phase 2
+Phase 2 of the project is based on the "Lottery Purchase System (LPS)" description provided in
+Phase 1. After reviewing that description again, complete the following tasks with your team
+members.
+1. (25 points) Develop a class diagram for the "Lottery Purchase System (LPS)." Even if you
+plan to develop the software without using classes, imagine this as a real-world project that
+requires multiple users, each with their own instance/object in the system. Therefore, approach
+this task as if you are building the system using classes. (Use computer tools like PowerPoint,
+Word, or other computer-aided tools to create these diagrams. Don’t include hand-drawn
+diagrams). When creating this diagram, you must use correct UML notations, follow best
+practices, and apply the clarity techniques covered in class.
+2. (25 points) State diagrams illustrate how a single object behaves in response to a series of
+events within your system. Choose the two most active objects from your system and create
+separate state diagrams for each. (Similar to the exercises we did in class).
+Name of the first object: ____________
+• Draw the first state diagram.
+Name of the second object: ____________
+• Draw the second state diagram.
+When creating these diagrams, you must use correct UML notations, follow best practices, and
+apply the clarity techniques covered in class.
+3. (45 points) Develop a working program for the description given in phase 1. This program
+must have a graphical interface. Although you were given more than a month to complete it, do
+not wait until the last week to start. Whether you choose to develop this project as a website,
+mobile app, or graphical Java application, ect, keep in mind that research and implementation
+take significant time. Starting late will jeopardize your ability to produce a high-quality final
+result.
+Please note that this is a team project, and you do not have to develop this program by yourself.
+Once you are done developing this program, create a video describing each functionality of the
+software. This is part of the project presentation, and each member of your team needs to
+participate in the presentation. (You do not need to involve any non-participating team members
+in the presentation.)
+In the program, demonstrate each implemented functionality, such as a user browsing and
+purchasing tickets. For example, after logging out and back in, the user should be able to view all
+previously purchased tickets, etc. In the video, you need to show each functionality in action
+(not just pointing out it’s there. You need to show how the process works). Attempting to
+mislead the instructor by using fake or static code will result in a zero grade for the entire
+project.
+When submitting Phase 2, your video needs to showcase how to operate the program. Ensure
+that all stakeholder-requested functionalities are demonstrated in the video. Failing to
+demonstrate all functionalities in the video will result in a point deduction. You do not need to
+describe the code, as I will review it manually.
+4. (5 points) During your design and development of the project, consider possible local and
+global impacts of the project on individuals, organizations, and society. (We will talk about this
+topic in a future lecture). Once you analyze these impacts, describe your thoughts.
+5. (Required) Document the work completed by each team member. All team members must
+contribute equally and support each other to ensure a successful project. If any issues arise in a
+section developed by another member, work together to resolve them.
+<Member name> <e-mail>
+Work done:
+List the tasks that a team member has completed.
+Contribution Percentage:
+If a team member has contributed at least close to an equal amount of work, assign 100%
+here. Otherwise, specify the percentage of work you believe the team member has contributed.
+< Member name> <e-mail>
+Work done:
+Contribution Percentage:
+< Member name> <e-mail>
+Work done:
+Contribution Percentage:
+< Member name> <e-mail>
+Work done:
+Contribution Percentage:
+More information about the submission process will be provided one day before the due date.
+Before submitting the document, please ensure that all images are displayed correctly. All
+diagrams must be legible and clear. If you have any questions about the project, please bring
+them to class or ask during office hours, rather than through email.
+Things that needed to be followed when developing the project:
+• For administrative functionalities, the admin user should not be required to update the
+system via a database, files, WordPress admin page, Django Administration page, etc...
+Instead, you need to develop a dedicated admin page where they can add movies, delete
+them, view system status, and perform other tasks directly. You must develop a graphical
+interface that allows the admin to make such changes.
+• For the programming portion, implementing the lottery ticket claiming center
+functionality is optional. To keep the program short, you may omit all features associated
+with claiming prizes above $599. However, if these features are applicable to your UML
+diagrams, they must be included.
+• Always keep a backup of your code in case it gets deleted.
+• This is a team project, so the entire team must verify each other's work. If an issue is
+found in a teammate's contribution, it is your responsibility to work with them to correct
+it. Record such efforts in the team contribution table. Failure to resolve project issues will
+result in point deductions for the entire team, as it reflects a lack of understanding by all
+members.
+• If you encounter an issue with a team member not participating, notify your instructor
+immediately after class. The instructor will then communicate with the student to resolve
+the issue or, if necessary, remove them from the group. Do not wait until the last week to
+report such problems; doing so makes the situation your responsibility.
+• A team member who keeps promising to deliver work at the end but does not show any
+progress is a major red flag. If a team member is not showing progress, it likely means
+they are not doing their part. You should speak with your instructor right away rather
+than waiting until the last few weeks.
+• Not completing work on time due to group issues is the responsibility of each team
+member. Therefore, it is essential to communicate with the instructor immediately to
+address and resolve any group-related problems.
+• Waiting until the end and complaining that other team members did not assign you any
+work or contact you is not an excuse. This will result in a lower grade or even a grade of
+zero for not completing any work. Completing your work promptly is the responsibility
+of each individual team member.
+• Please note that the “Local and Global Impacts” question is worth only 5 points. If a team
+member works solely on this part, they will receive only 5 points for Phase 2. All team
+members must contribute equally to earn an equal grade. Simply proofreading the
+documents or attending meetings does not count as an equal contribution to work.
+• Your TA will schedule a time for you to demonstrate your program. All programs and codes will
+be reviewed and analyzed by your TA.
+• Helpful video regarding the project
