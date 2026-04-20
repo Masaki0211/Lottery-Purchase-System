@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user_name }}!</h1>
+    <p>You are logged in.</p>
+    <p>This is your customer dashboard.</p>
+
+    <ul>
+        <li><a href="{{ url_for('tickets') }}">Browse Tickets</a></li>
+        <li><a href="{{ url_for('orders') }}">View Order History</a></li>
+    </ul>
+{% endblock %}

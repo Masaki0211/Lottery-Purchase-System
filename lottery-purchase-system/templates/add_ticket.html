@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Ticket</h1>
+
+<form method="POST">
+    <input name="game_name" placeholder="Game Name" required>
+    <input name="price" type="number" step="0.01" placeholder="Price" required>
+    <input name="drawing_date" placeholder="YYYY-MM-DD" required>
+    <input name="prize_amount" type="number" step="0.01" placeholder="Prize" required>
+
+    <button type="submit">Add</button>
+</form>
+{% endblock %}

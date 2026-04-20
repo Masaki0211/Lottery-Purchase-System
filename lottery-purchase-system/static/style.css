@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+nav {
+    background: #222;
+    padding: 12px 20px;
+}
+
+nav a {
+    color: white;
+    margin-right: 16px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: white;
+    padding: 24px;
+    border-radius: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    cursor: pointer;
+}
+
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.flash-messages li {
+    background: #e7f3ff;
+    border: 1px solid #b6d4fe;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
