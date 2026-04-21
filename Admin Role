@@ -5,5 +5,5 @@ In the terminal run each line one at a time
 python
 import sqlite3
 conn = sqlite3.connect("database.db")
-conn.execute("UPDATE users SET role='admin' WHERE email='your_email'")
+conn.execute("UPDATE users SET role='admin' WHERE email='<your_email>'")
 conn.commit()
