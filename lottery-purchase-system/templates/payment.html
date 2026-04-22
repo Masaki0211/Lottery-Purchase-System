@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+ 
+{% block title %}Payment{% endblock %}
+ 
+{% block content %}
+<h1>Payment</h1>
+<p>Total: ${{ total_amount }}</p>
+ 
+<label>Payment Method</label>
+<select id="method_select" onchange="showForm()">
+    <option value="">-- Select --</option>
+    <option value="credit">Credit Card</option>
+    <option value="debit">Debit Card</option>
+    <option value="paypal">PayPal</option>
+</select>
+ 
+<!-- Credit / Debit -->
+<form method="POST" id="card_form" style="display:none;">
+    <input type="hidden" name="payment_method" id="card_method_value">
+    <label>Card Number</label>
+    <input type="text" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+    <label>Expiry (MM/YY)</label>
+    <input type="text" name="expiry" placeholder="MM/YY" maxlength="5" required>
+    <label>CVV</label>
+    <input type="text" name="cvv" placeholder="123" maxlength="3" required>
+    <label>Cardholder Name</label>
+    <input type="text" name="card_name" placeholder="John Doe" required>
+    <button type="submit">Pay ${{ total_amount }}</button>
+</form>
+ 
+<!-- PayPal -->
+<form method="POST" id="paypal_form" style="display:none;">
+    <input type="hidden" name="payment_method" value="PayPal">
+    <label>PayPal Email</label>
+    <input type="email" name="paypal_email" placeholder="you@example.com" required>
+    <label>Password</label>
+    <input type="password" name="paypal_password" placeholder="PayPal password" required>
+    <button type="submit">Pay ${{ total_amount }}</button>
+</form>
+ 
+<script>
+    function showForm() {
+        const val = document.getElementById('method_select').value;
+        document.getElementById('card_form').style.display = (val === 'credit' || val === 'debit') ? 'flex' : 'none';
+        document.getElementById('paypal_form').style.display = val === 'paypal' ? 'flex' : 'none';
+        if (val === 'credit') document.getElementById('card_method_value').value = 'Credit Card';
+        if (val === 'debit') document.getElementById('card_method_value').value = 'Debit Card';
+    }
+</script>
+{% endblock %}

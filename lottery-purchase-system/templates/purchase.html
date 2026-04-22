@@ -2,19 +2,30 @@
 
 {% block content %}
 <h1>Purchase {{ ticket.game_name }}</h1>
-
-<p>Price: ${{ ticket.price }}</p>
+<p>Price: ${{ ticket.price }} | Drawing: {{ ticket.drawing_date }} | Prize: ${{ ticket.prize_amount }}</p>
 
 <form method="POST">
     <label>Quantity (max 10)</label>
-    <input type="number" name="quantity" min="1" max="10" required>
+    <input type="number" name="quantity" id="quantity" min="1" max="10" value="1" required>
 
     <label>Selection Mode</label>
-    <select name="selection_mode">
-        <option value="auto">Auto</option>
-        <option value="manual">Manual</option>
+    <select name="selection_mode" id="selection_mode" onchange="toggleManual()">
+        <option value="auto">Auto (Random)</option>
+        <option value="manual">Manual (Pick Numbers)</option>
     </select>
+
+    <div id="manual_section" style="display:none;">
+        <p>Enter 5 numbers (1~50, separated by comma: 8, 12, 22, 24, 31)</p>
+        <input type="text" name="manual_numbers" placeholder="3,7,15,28,44">
+    </div>
 
     <button type="submit">Buy</button>
 </form>
+
+<script>
+    function toggleManual() {
+        const isManual = document.getElementById('selection_mode').value === 'manual';
+        document.getElementById('manual_section').style.display = isManual ? 'block' : 'none';
+    }
+</script>
 {% endblock %}

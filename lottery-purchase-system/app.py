@@ -66,12 +66,12 @@ def login_required(view):
     return wrapped_view
 
 
-def generate_numbers(mode):
+def generate_numbers(mode, manual_pick=None):
     if mode == "auto":
         nums = sorted(random.sample(range(1, 51), 5))
         return ",".join(map(str, nums))
     else:
-        return "manual-entry"
+        return manual_pick
 
 
 def generate_confirmation():
@@ -202,56 +202,91 @@ def purchase(ticket_type_id):
             flash("Invalid selection mode.")
             return redirect(url_for("purchase", ticket_type_id=ticket_type_id))
 
+
+
         total_amount = ticket_type["price"] * quantity
 
-        # Create order
+        manual_picks = []
+        if selection_mode == "manual":
+            raw = request.form.get("manual_numbers", "").strip()
+            if not raw:
+                flash("Please enter numbers")
+                return redirect(url_for("purchase", ticket_type_id=ticket_type_id))
+            manual_picks = [raw] * quantity
+
+        numbers_list = [
+            generate_numbers(selection_mode, manual_picks[i] if manual_picks else None)
+            for i in range(quantity)
+        ]
+
+        session["pending_order"] = {
+            "ticket_type_id": ticket_type_id,
+            "quantity": quantity,
+            "selection_mode": selection_mode,
+            "total_amount": total_amount,
+            "numbers_list": numbers_list,
+        }
+        return redirect(url_for("payment"))
+
+    return render_template("purchase.html", ticket=ticket_type)
+
+
+
+
+
+@app.route("/payment", methods=["GET", "POST"])
+@login_required
+def payment():
+    order = session.get("pending_order")
+    if not order:
+        flash("No pending order.")
+        return redirect(url_for("tickets"))
+
+    if request.method == "POST":
+        payment_method = request.form.get("payment_method")
+        db = get_db()
+
         cursor = db.execute("""
             INSERT INTO orders (user_id, order_date, total_amount, status)
             VALUES (?, ?, ?, ?)
         """, (
             session["user_id"],
             datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            total_amount,
+            order["total_amount"],
             "completed"
         ))
         order_id = cursor.lastrowid
 
-        # Create tickets
-        for _ in range(quantity):
-            numbers = generate_numbers(selection_mode)
-            confirmation = generate_confirmation()
-
+        for numbers in order["numbers_list"]:
             db.execute("""
                 INSERT INTO tickets
                 (order_id, ticket_type_id, selected_numbers, selection_mode, confirmation_number)
                 VALUES (?, ?, ?, ?, ?)
             """, (
                 order_id,
-                ticket_type_id,
+                order["ticket_type_id"],
                 numbers,
-                selection_mode,
-                confirmation
+                order["selection_mode"],
+                generate_confirmation()
             ))
 
-        # Fake payment record
         db.execute("""
             INSERT INTO payments (order_id, payment_method, amount, payment_status, transaction_date)
             VALUES (?, ?, ?, ?, ?)
         """, (
             order_id,
-            "Credit Card",
-            total_amount,
+            payment_method,
+            order["total_amount"],
             "approved",
             datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ))
 
         db.commit()
-
+        session.pop("pending_order", None)
         flash("Purchase successful!")
         return redirect(url_for("orders"))
 
-    return render_template("purchase.html", ticket=ticket_type)
-
+    return render_template("payment.html", total_amount=order["total_amount"])
 
 @app.route("/orders")
 @login_required
@@ -274,6 +309,8 @@ def orders():
     """, (session["user_id"],)).fetchall()
 
     return render_template("orders.html", orders=orders, tickets=tickets)
+
+
 
 def admin_required(view):
     @wraps(view)
