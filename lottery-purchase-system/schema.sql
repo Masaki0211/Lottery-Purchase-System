@@ -41,6 +41,9 @@ CREATE TABLE tickets (
     selection_mode TEXT NOT NULL,
     confirmation_number TEXT NOT NULL UNIQUE,
     is_winner INTEGER NOT NULL DEFAULT 0,
+    match_count INTEGER NOT NULL DEFAULT 0,
+    winning_amount REAL NOT NULL DEFAULT 0,
+    result_status TEXT NOT NULL DEFAULT 'pending_drawing',
     claim_status TEXT NOT NULL DEFAULT 'not_claimed',
     FOREIGN KEY (order_id) REFERENCES orders (id),
     FOREIGN KEY (ticket_type_id) REFERENCES ticket_types (id)
