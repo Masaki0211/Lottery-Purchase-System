@@ -8,13 +8,15 @@
     <input name="price" type="number" step="0.01" value="{{ ticket.price }}">
     <input name="drawing_date" value="{{ ticket.drawing_date }}">
     <input name="prize_amount" type="number" step="0.01" value="{{ ticket.prize_amount }}">
+    <label>Winning Numbers</label>
+    <input name="winning_numbers" value="{{ ticket.winning_numbers }}" placeholder="Example: 3,7,15,28,44" required>
 
     <label>Active</label>
     <select name="is_active">
         <option value="1">Yes</option>
         <option value="0">No</option>
     </select>
-
+    
     <button type="submit">Save</button>
 </form>
 {% endblock %}
