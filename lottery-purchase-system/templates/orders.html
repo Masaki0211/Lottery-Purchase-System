@@ -16,7 +16,18 @@
             <li>
                 {{ ticket.game_name }} |
                 Numbers: {{ ticket.selected_numbers }} |
-                Confirmation: {{ ticket.confirmation_number }}
+                Confirmation: {{ ticket.confirmation_number }} |
+
+                {% if ticket.result_status == 'pending_drawing' %}
+                    <strong>Status: Pending Drawing</strong>
+                {% elif ticket.result_status == 'winning' %}
+                    <strong>WINNER!</strong>
+                    Matches: {{ ticket.match_count }} |
+                    Prize: ${{ ticket.winning_amount }}
+                {% else %}
+                    <strong>Not a winner</strong>
+                    Matches: {{ ticket.match_count }}
+                {% endif %}
             </li>
         {% endif %}
     {% endfor %}
