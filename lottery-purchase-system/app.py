@@ -77,6 +77,57 @@ def generate_numbers(mode, manual_pick=None):
 def generate_confirmation():
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
+def parse_number_string(number_string):
+    try:
+        nums = [int(n.strip()) for n in number_string.split(",")]
+    except (ValueError, AttributeError):
+        return None
+
+    if len(nums) != 5:
+        return None
+
+    if len(set(nums)) != 5:
+        return None
+
+    if any(n < 1 or n > 50 for n in nums):
+        return None
+
+    return sorted(nums)
+
+
+def validate_lotto_numbers(raw):
+    nums = parse_number_string(raw)
+
+    if nums is None:
+        return None
+
+    return ",".join(map(str, nums))
+
+
+def calculate_winnings(selected_numbers, winning_numbers, prize_amount):
+    selected = parse_number_string(selected_numbers)
+    winning = parse_number_string(winning_numbers)
+
+    if selected is None or winning is None:
+        return 0, 0, 0.0
+
+    match_count = len(set(selected) & set(winning))
+
+    if match_count == 5:
+        percent = 1.00
+    elif match_count == 4:
+        percent = 0.20
+    elif match_count == 3:
+        percent = 0.05
+    elif match_count == 2:
+        percent = 0.01
+    else:
+        percent = 0.00
+
+    winning_amount = round(float(prize_amount) * percent, 2)
+    is_winner = 1 if winning_amount > 0 else 0
+
+    return match_count, is_winner, winning_amount
 
 @app.route("/")
 def index():
@@ -158,8 +209,22 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", user_name=session.get("user_name"))
+    db = get_db()
 
+    winning_count = db.execute("""
+        SELECT COUNT(*) AS count
+        FROM tickets t
+        JOIN orders o ON t.order_id = o.id
+        WHERE o.user_id = ?
+        AND t.result_status = 'winning'
+        AND t.claim_status = 'not_claimed'
+    """, (session["user_id"],)).fetchone()["count"]
+
+    return render_template(
+        "dashboard.html",
+        user_name=session.get("user_name"),
+        winning_count=winning_count
+    )
 
 @app.route("/tickets")
 @login_required
@@ -209,10 +274,13 @@ def purchase(ticket_type_id):
         manual_picks = []
         if selection_mode == "manual":
             raw = request.form.get("manual_numbers", "").strip()
-            if not raw:
-                flash("Please enter numbers")
+            cleaned_numbers = validate_lotto_numbers(raw)
+
+            if cleaned_numbers is None:
+                flash("Manual numbers must be 5 unique numbers between 1 and 50, separated by commas.")
                 return redirect(url_for("purchase", ticket_type_id=ticket_type_id))
-            manual_picks = [raw] * quantity
+
+            manual_picks = [cleaned_numbers] * quantity
 
         numbers_list = [
             generate_numbers(selection_mode, manual_picks[i] if manual_picks else None)
@@ -260,14 +328,28 @@ def payment():
         for numbers in order["numbers_list"]:
             db.execute("""
                 INSERT INTO tickets
-                (order_id, ticket_type_id, selected_numbers, selection_mode, confirmation_number)
-                VALUES (?, ?, ?, ?, ?)
+                (
+                    order_id,
+                    ticket_type_id,
+                    selected_numbers,
+                    selection_mode,
+                    confirmation_number,
+                    is_winner,
+                    match_count,
+                    winning_amount,
+                    result_status
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 order_id,
                 order["ticket_type_id"],
                 numbers,
                 order["selection_mode"],
-                generate_confirmation()
+                generate_confirmation(),
+                0,
+                0,
+                0.0,
+                "pending_drawing"
             ))
 
         db.execute("""
@@ -283,7 +365,7 @@ def payment():
 
         db.commit()
         session.pop("pending_order", None)
-        flash("Purchase successful!")
+        flash("Purchase successful! Ticket results will be available after the drawing.")
         return redirect(url_for("orders"))
 
     return render_template("payment.html", total_amount=order["total_amount"])
@@ -346,12 +428,20 @@ def add_ticket():
         price = float(request.form["price"])
         date = request.form["drawing_date"]
         prize = float(request.form["prize_amount"])
+        winning_numbers_raw = request.form["winning_numbers"].strip()
+
+        winning_numbers = validate_lotto_numbers(winning_numbers_raw)
+
+        if winning_numbers is None:
+            flash("Winning numbers must be 5 unique numbers between 1 and 50, separated by commas.")
+            return redirect(url_for("add_ticket"))
 
         db = get_db()
         db.execute("""
-            INSERT INTO ticket_types (game_name, price, drawing_date, prize_amount, is_active)
-            VALUES (?, ?, ?, ?, 1)
-        """, (name, price, date, prize))
+            INSERT INTO ticket_types
+            (game_name, price, drawing_date, prize_amount, winning_numbers, is_active)
+            VALUES (?, ?, ?, ?, ?, 1)
+        """, (name, price, date, prize, winning_numbers))
         db.commit()
 
         flash("Ticket added!")
@@ -375,19 +465,94 @@ def edit_ticket(ticket_id):
         price = float(request.form["price"])
         date = request.form["drawing_date"]
         prize = float(request.form["prize_amount"])
+        winning_numbers_raw = request.form["winning_numbers"].strip()
         active = int(request.form["is_active"])
+
+        winning_numbers = validate_lotto_numbers(winning_numbers_raw)
+
+        if winning_numbers is None:
+            flash("Winning numbers must be 5 unique numbers between 1 and 50, separated by commas.")
+            return redirect(url_for("edit_ticket", ticket_id=ticket_id))
 
         db.execute("""
             UPDATE ticket_types
-            SET game_name=?, price=?, drawing_date=?, prize_amount=?, is_active=?
+            SET game_name=?, price=?, drawing_date=?, prize_amount=?, winning_numbers=?, is_active=?
             WHERE id=?
-        """, (name, price, date, prize, active, ticket_id))
+        """, (name, price, date, prize, winning_numbers, active, ticket_id))
 
         db.commit()
         flash("Updated!")
         return redirect(url_for("admin_dashboard"))
 
     return render_template("edit_ticket.html", ticket=ticket)
+
+@app.route("/admin/finalize/<int:ticket_type_id>", methods=["POST"])
+@login_required
+@admin_required
+def finalize_drawing(ticket_type_id):
+    db = get_db()
+
+    ticket_type = db.execute(
+        "SELECT * FROM ticket_types WHERE id = ?",
+        (ticket_type_id,)
+    ).fetchone()
+
+    if ticket_type is None:
+        flash("Ticket type not found.")
+        return redirect(url_for("admin_dashboard"))
+
+    if not ticket_type["winning_numbers"]:
+        flash("Winning numbers must be set before finalizing the drawing.")
+        return redirect(url_for("admin_dashboard"))
+
+    # Enforce waiting until drawing date
+    today = datetime.now().date()
+    drawing_date = datetime.strptime(ticket_type["drawing_date"], "%Y-%m-%d").date()
+
+    if today < drawing_date:
+        flash("This drawing cannot be finalized before the drawing date.")
+        return redirect(url_for("admin_dashboard"))
+
+    purchased_tickets = db.execute("""
+        SELECT *
+        FROM tickets
+        WHERE ticket_type_id = ?
+        AND result_status = 'pending_drawing'
+    """, (ticket_type_id,)).fetchall()
+
+    winners_found = 0
+
+    for purchased_ticket in purchased_tickets:
+        match_count, is_winner, winning_amount = calculate_winnings(
+            purchased_ticket["selected_numbers"],
+            ticket_type["winning_numbers"],
+            ticket_type["prize_amount"]
+        )
+
+        if is_winner:
+            winners_found += 1
+
+        result_status = "winning" if is_winner else "non_winning"
+
+        db.execute("""
+            UPDATE tickets
+            SET is_winner = ?,
+                match_count = ?,
+                winning_amount = ?,
+                result_status = ?
+            WHERE id = ?
+        """, (
+            is_winner,
+            match_count,
+            winning_amount,
+            result_status,
+            purchased_ticket["id"]
+        ))
+
+    db.commit()
+
+    flash(f"Drawing finalized. {winners_found} winning ticket(s) found.")
+    return redirect(url_for("admin_dashboard"))
 
 @app.route("/admin/delete/<int:ticket_id>", methods=["POST"])
 @login_required
