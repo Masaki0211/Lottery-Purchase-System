@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Search Tickets{% endblock %}
+
+{% block content %}
+<h1>Search Tickets</h1>
+
+<form method="GET" action="{{ url_for('search') }}">
+    <input type="text" name="query" placeholder="Search by game name or confirmation number" value="{{ query or '' }}">
+    <button type="submit">Search</button>
+</form>
+
+{% if query %}
+    <h2>Results for "{{ query }}"</h2>
+
+    {% if tickets %}
+        {% for ticket in tickets %}
+            <div>
+                <h3>{{ ticket.game_name }}</h3>
+                <p>Confirmation: {{ ticket.confirmation_number }}</p>
+                <p>Numbers: {{ ticket.selected_numbers }}</p>
+                <p>Order Date: {{ ticket.order_date }}</p>
+                <p>Status: {{ 'Winner' if ticket.is_winner else 'Not a winner' }}</p>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No tickets found matching "{{ query }}".</p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
