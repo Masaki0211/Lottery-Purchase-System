@@ -9,11 +9,13 @@
 <body>
     <nav>
         <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('winning_numbers') }}">Winning Numbers</a>
 
         {% if session.get('user_id') %}
             <a href="{{ url_for('dashboard') }}">Dashboard</a>
             <a href="{{ url_for('tickets') }}">Browse Tickets</a>
             <a href="{{ url_for('orders') }}">Order History</a>
+            <a href="{{ url_for('search') }}">Search Tickets</a>
             <a href="{{ url_for('logout') }}">Logout</a>
             {% if session.get('role') == 'admin' %}
             <a href="{{ url_for('admin_dashboard') }}">Admin</a>
