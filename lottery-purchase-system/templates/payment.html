@@ -1,11 +1,11 @@
 {% extends "base.html" %}
- 
+
 {% block title %}Payment{% endblock %}
- 
+
 {% block content %}
 <h1>Payment</h1>
-<p>Total: ${{ total_amount }}</p>
- 
+<p>Total: ${{ "%.2f"|format(total_amount) }}</p>
+
 <label>Payment Method</label>
 <select id="method_select" onchange="showForm()">
     <option value="">-- Select --</option>
@@ -13,31 +13,31 @@
     <option value="debit">Debit Card</option>
     <option value="paypal">PayPal</option>
 </select>
- 
+
 <!-- Credit / Debit -->
-<form method="POST" id="card_form" style="display:none;">
+<form method="POST" action="{{ url_for('payment') }}" id="card_form" style="display:none;">
     <input type="hidden" name="payment_method" id="card_method_value">
     <label>Card Number</label>
-    <input type="text" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+    <input type="text" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
     <label>Expiry (MM/YY)</label>
-    <input type="text" name="expiry" placeholder="MM/YY" maxlength="5" required>
+    <input type="text" name="expiry" placeholder="MM/YY" maxlength="5">
     <label>CVV</label>
-    <input type="text" name="cvv" placeholder="123" maxlength="3" required>
+    <input type="text" name="cvv" placeholder="123" maxlength="3">
     <label>Cardholder Name</label>
-    <input type="text" name="card_name" placeholder="John Doe" required>
-    <button type="submit">Pay ${{ total_amount }}</button>
+    <input type="text" name="card_name" placeholder="John Doe">
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
 </form>
- 
+
 <!-- PayPal -->
-<form method="POST" id="paypal_form" style="display:none;">
+<form method="POST" action="{{ url_for('payment') }}" id="paypal_form" style="display:none;">
     <input type="hidden" name="payment_method" value="PayPal">
     <label>PayPal Email</label>
-    <input type="email" name="paypal_email" placeholder="you@example.com" required>
+    <input type="email" name="paypal_email" placeholder="you@example.com">
     <label>Password</label>
-    <input type="password" name="paypal_password" placeholder="PayPal password" required>
-    <button type="submit">Pay ${{ total_amount }}</button>
+    <input type="password" name="paypal_password" placeholder="PayPal password">
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
 </form>
- 
+
 <script>
     function showForm() {
         const val = document.getElementById('method_select').value;
