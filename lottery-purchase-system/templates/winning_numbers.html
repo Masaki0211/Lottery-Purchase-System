@@ -5,7 +5,21 @@
 {% block content %}
 <h1>Winning Numbers</h1>
 
+{% set ns = namespace(last_week_shown=false, this_week_shown=false) %}
+
 {% for game in games %}
+    {% if game.drawing_date <= today %}
+        {% if not ns.last_week_shown %}
+            <h2>Last Week</h2>
+            {% set ns.last_week_shown = true %}
+        {% endif %}
+    {% else %}
+        {% if not ns.this_week_shown %}
+            <h2>This Week</h2>
+            {% set ns.this_week_shown = true %}
+        {% endif %}
+    {% endif %}
+
     <div>
         <h3>{{ game.game_name }}</h3>
         <p>Drawing Date: {{ game.drawing_date }}</p>
@@ -30,9 +44,9 @@
 
 {% if check_result %}
     {% if check_result.is_winner %}
-        <p> Ticket <strong>{{ check_result.confirmation_number }}</strong> for <strong>{{ check_result.game_name }}</strong> is a WINNER! Claim status: {{ check_result.claim_status }}</p>
+        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> for <strong>{{ check_result.game_name }}</strong> is a WINNER! Prize: ${{ "%.2f"|format(check_result.winning_amount) }} ({{ check_result.match_count }} matches)</p>
     {% else %}
-        <p> Ticket <strong>{{ check_result.confirmation_number }}</strong> ({{ check_result.game_name }}) — not a winner this time.</p>
+        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> ({{ check_result.game_name }}) — not a winner. Matches: {{ check_result.match_count }}</p>
     {% endif %}
 {% elif check_error %}
     <p>{{ check_error }}</p>
@@ -40,7 +54,6 @@
 
 {% if session.get('role') == 'admin' %}
     <h2>Set Winning Numbers</h2>
-
     <form method="POST" action="{{ url_for('set_winning_numbers') }}">
         <select name="ticket_type_id" required>
             <option value="">-- Select Game --</option>
