@@ -52,19 +52,6 @@
     <p>{{ check_error }}</p>
 {% endif %}
 
-{% if session.get('role') == 'admin' %}
-    <h2>Set Winning Numbers</h2>
-    <form method="POST" action="{{ url_for('set_winning_numbers') }}">
-        <select name="ticket_type_id" required>
-            <option value="">-- Select Game --</option>
-            {% for game in games %}
-                <option value="{{ game.id }}">{{ game.game_name }} ({{ game.drawing_date }})</option>
-            {% endfor %}
-        </select>
-        <input type="text" name="winning_numbers" placeholder="e.g. 4,17,23,38,45" required>
-        <button type="submit">Save Numbers</button>
-    </form>
-    <p>Enter numbers as comma-separated values. Matching tickets will be marked as winners automatically.</p>
-{% endif %}
+
 
 {% endblock %}

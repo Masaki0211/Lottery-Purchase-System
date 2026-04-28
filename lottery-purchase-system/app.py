@@ -565,56 +565,7 @@ def check_ticket():
     return render_template("winning_numbers.html", games=games,
                            check_result=row, check_error=None,
                            check_confirmation=confirmation, today=today)
- 
- 
-@app.route("/admin/set-winning-numbers", methods=["POST"])
-@login_required
-@admin_required
-def set_winning_numbers():
-    """
-    Admin-only POST: save winning numbers for a game and
-    automatically flag matching tickets as winners.
-    """
-    db = get_db()
-    ticket_type_id = int(request.form["ticket_type_id"])
-    winning_numbers_raw = request.form["winning_numbers"].strip()
 
-    try:
-        winning_list = [str(int(n.strip())) for n in winning_numbers_raw.split(",")]
-        winning_str = ",".join(winning_list)
-    except ValueError:
-        flash("Invalid format. Use comma-separated integers e.g. 4,17,23,38,45")
-        return redirect(url_for("winning_numbers"))
-
-    db.execute("UPDATE ticket_types SET winning_numbers = ? WHERE id = ?",
-               (winning_str, ticket_type_id))
-
-    game = db.execute("SELECT * FROM ticket_types WHERE id = ?", (ticket_type_id,)).fetchone()
-    winning_set = set(winning_list)
-
-    tickets = db.execute("""
-            SELECT t.id, t.selected_numbers FROM tickets t
-            WHERE t.ticket_type_id = ? AND t.result_status = 'pending_drawing'
-        """, (ticket_type_id,)).fetchall()
-
-    winner_count = 0
-    for ticket in tickets:
-        ticket_nums = set(n.strip() for n in ticket["selected_numbers"].split(","))
-        match_count = len(ticket_nums & winning_set)
-        prize = calc_prize(game["game_name"], match_count)
-        is_winner = 1 if prize > 0 else 0
-        result_status = "winning" if is_winner else "not_winning"
-        if is_winner:
-            winner_count += 1
-
-        db.execute("""
-                UPDATE tickets SET match_count=?, winning_amount=?, is_winner=?, result_status=?
-                WHERE id=?
-            """, (match_count, prize, is_winner, result_status, ticket["id"]))
-
-    db.commit()
-    flash(f"Winning numbers saved. {winner_count} winner(s) found.")
-    return redirect(url_for("winning_numbers"))
 
 
 @app.route("/search")
