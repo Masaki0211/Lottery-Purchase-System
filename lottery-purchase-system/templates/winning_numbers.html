@@ -44,7 +44,7 @@
 
 {% if check_result %}
     {% if check_result.is_winner %}
-        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> for <strong>{{ check_result.game_name }}</strong> is a WINNER! Prize: ${{ "%.2f"|format(check_result.winning_amount) }} ({{ check_result.match_count }} matches)</p>
+        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> for <strong>{{ check_result.game_name }}</strong> is a WINNER! Prize: ${{ "%.2f"|format(check_result.winning_amount) }} ({{ check_result.match_count }} matches) | Claim status: {{ check_result.claim_status }}</p>
     {% else %}
         <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> ({{ check_result.game_name }}) — not a winner. Matches: {{ check_result.match_count }}</p>
     {% endif %}
