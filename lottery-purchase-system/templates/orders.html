@@ -15,18 +15,28 @@
         {% if ticket.order_id == order.id %}
             <li>
                 {{ ticket.game_name }} |
-                Numbers: {{ ticket.selected_numbers }} |
+                Numbers: {{ ticket.selected_numbers }}
+                {% if ticket.selected_bonus %} + Bonus: {{ ticket.selected_bonus }}{% endif %} |
                 Confirmation: {{ ticket.confirmation_number }} |
 
                 {% if ticket.result_status == 'pending_drawing' %}
                     <strong>Status: Pending Drawing</strong>
                 {% elif ticket.result_status == 'winning' %}
                     <strong>WINNER!</strong>
-                    Matches: {{ ticket.match_count }} |
-                    Prize: ${{ ticket.winning_amount }}
+                    Matches: {{ ticket.match_count }}
+                    {% if ticket.bonus_match %} + Bonus ✓{% endif %} |
+                    Prize: ${{ "%.2f"|format(ticket.winning_amount) }} |
+                    {% if ticket.claim_status == 'not_claimed' %}
+                        <a href="{{ url_for('claim_ticket', ticket_id=ticket.id) }}">
+                            <button>Claim Prize</button>
+                        </a>
+                    {% else %}
+                        <span>Claimed ✓</span>
+                    {% endif %}
                 {% else %}
                     <strong>Not a winner</strong>
                     Matches: {{ ticket.match_count }}
+                    {% if ticket.bonus_match %} + Bonus ✓{% endif %}
                 {% endif %}
             </li>
         {% endif %}

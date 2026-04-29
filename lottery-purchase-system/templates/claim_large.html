@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="print-section">
+    <h1>Prize Claim Certificate</h1>
+    <hr>
+    <h3>Validation Code: <span style="font-family: monospace; color: blue;">{{ ticket.claim_code }}</span></h3>
+    <p><strong>Prize Amount:</strong> ${{ "{:,.2f}".format(ticket.winning_amount) }}</p>
+    <p><strong>Ticket ID:</strong> {{ ticket.confirmation_number }}</p>
+    <p><strong>Expiration Date:</strong> <span style="color:red; font-weight:bold;">{{ exp_date }}</span></p>
+    <p><em>Notice: This form is VOID if not presented at an official claim center within 1 year of the drawing date.</em></p>
+</div>
+<button onclick="window.print()">Print This Page</button>
+<a href="{{ url_for('orders') }}">Back to History</a>
+{% endblock %}

@@ -5,53 +5,21 @@
 {% block content %}
 <h1>Winning Numbers</h1>
 
-{% set ns = namespace(last_week_shown=false, this_week_shown=false) %}
-
 {% for game in games %}
-    {% if game.drawing_date <= today %}
-        {% if not ns.last_week_shown %}
-            <h2>Last Week</h2>
-            {% set ns.last_week_shown = true %}
-        {% endif %}
-    {% else %}
-        {% if not ns.this_week_shown %}
-            <h2>This Week</h2>
-            {% set ns.this_week_shown = true %}
-        {% endif %}
-    {% endif %}
-
     <div>
         <h3>{{ game.game_name }}</h3>
         <p>Drawing Date: {{ game.drawing_date }}</p>
         <p>Jackpot: ${{ "%.2f"|format(game.prize_amount) }}</p>
 
         {% if game.winning_numbers %}
-            <p>Winning Numbers: {{ game.winning_numbers }}</p>
+            <p>Winning Numbers: {{ game.winning_numbers }}
+            {% if game.winning_bonus %} | Bonus: {{ game.winning_bonus }}{% endif %}
+            </p>
         {% else %}
             <p>Numbers not yet drawn.</p>
         {% endif %}
     </div>
     <hr>
 {% endfor %}
-
-<h2>Check Your Ticket</h2>
-<p>Enter your confirmation number to see if you won.</p>
-
-<form method="POST" action="{{ url_for('check_ticket') }}">
-    <input type="text" name="confirmation_number" placeholder="Confirmation number" maxlength="10" required value="{{ check_confirmation or '' }}">
-    <button type="submit">Check</button>
-</form>
-
-{% if check_result %}
-    {% if check_result.is_winner %}
-        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> for <strong>{{ check_result.game_name }}</strong> is a WINNER! Prize: ${{ "%.2f"|format(check_result.winning_amount) }} ({{ check_result.match_count }} matches) | Claim status: {{ check_result.claim_status }}</p>
-    {% else %}
-        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong> ({{ check_result.game_name }}) — not a winner. Matches: {{ check_result.match_count }}</p>
-    {% endif %}
-{% elif check_error %}
-    <p>{{ check_error }}</p>
-{% endif %}
-
-
 
 {% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin: Ticket Verification System</h1>
+<form method="POST">
+    <input type="text" name="verify_code" placeholder="Enter Claim Code or Confirmation #" required style="width: 300px;">
+    <button type="submit">Verify Ticket</button>
+</form>
+
+{% if result %}
+    <div style="border: 2px solid green; padding: 20px; margin-top: 20px;">
+        <h2>Ticket Found</h2>
+        <p><strong>Customer:</strong> {{ result.user_name }}</p>
+        <p><strong>Game:</strong> {{ result.game_name }}</p>
+        <p><strong>Amount:</strong> ${{ result.winning_amount }}</p>
+        <p><strong>Claim Status:</strong> {{ result.claim_status }} ({{ result.payout_type }})</p>
+        <p><strong>Validation Code:</strong> {{ result.claim_code or 'N/A' }}</p>
+    </div>
+{% elif request.method == 'POST' %}
+    <p style="color: red;">No record found. Please double-check the code.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+ 
+{% block title %}Edit Prize{% endblock %}
+ 
+{% block content %}
+<h1>Edit Prize: {{ row.game_name }}</h1>
+<p>
+    Main Matches: {{ row.main_matches }} |
+    Bonus Match: {{ 'Yes' if row.bonus_match else 'No' }}
+</p>
+<p><em>Note: Only prize amount can be edited. To change match conditions, delete and re-add.</em></p>
+ 
+<form method="POST">
+    <label>Prize Amount ($)</label>
+    <input type="number" name="prize" step="0.01" value="{{ row.prize }}" required>
+ 
+    <button type="submit">Save</button>
+</form>
+ 
+<a href="{{ url_for('admin_prize_rules', game_name=row.game_name) }}">← Back</a>
+{% endblock %}

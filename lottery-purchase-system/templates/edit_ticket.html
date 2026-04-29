@@ -1,22 +1,28 @@
 {% extends "base.html" %}
 
+{% block title %}Edit Ticket Type{% endblock %}
+
 {% block content %}
-<h1>Edit Ticket</h1>
+<h1>Edit Ticket: {{ ticket.game_name }}</h1>
 
 <form method="POST">
-    <input name="game_name" value="{{ ticket.game_name }}">
-    <input name="price" type="number" step="0.01" value="{{ ticket.price }}">
-    <input name="drawing_date" value="{{ ticket.drawing_date }}">
-    <input name="prize_amount" type="number" step="0.01" value="{{ ticket.prize_amount }}">
-    <label>Winning Numbers</label>
-    <input name="winning_numbers" value="{{ ticket.winning_numbers }}" placeholder="Example: 3,7,15,28,44" required>
+    <label>Ticket Price ($)</label>
+    <input type="number" name="price" step="0.01" value="{{ ticket.price }}" required>
+
+    <label>Drawing Date</label>
+    <input type="date" name="drawing_date" value="{{ ticket.drawing_date }}" required>
+
+    <label>Jackpot Amount ($)</label>
+    <input type="number" name="prize_amount" step="0.01" value="{{ ticket.prize_amount }}" required>
 
     <label>Active</label>
     <select name="is_active">
-        <option value="1">Yes</option>
-        <option value="0">No</option>
+        <option value="1" {% if ticket.is_active %}selected{% endif %}>Yes</option>
+        <option value="0" {% if not ticket.is_active %}selected{% endif %}>No</option>
     </select>
-    
+
     <button type="submit">Save</button>
 </form>
+
+<a href="{{ url_for('admin_dashboard') }}">← Back</a>
 {% endblock %}

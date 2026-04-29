@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Game Rule{% endblock %}
+
+{% block content %}
+<h1>Edit Game: {{ rule.game_name }}</h1>
+
+<form method="POST">
+    <label>Main Number Count</label>
+    <input type="number" name="main_count" value="{{ rule.main_count }}" min="1" max="10" required>
+
+    <label>Main Number Range (max value)</label>
+    <input type="number" name="main_range" value="{{ rule.main_range }}" min="1" max="100" required>
+
+    <label>Bonus Ball Range (leave empty if no bonus)</label>
+    <input type="number" name="bonus_range" value="{{ rule.bonus_range or '' }}" min="1" max="100">
+
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Prize Rules - {{ game_name }}{% endblock %}
+
+{% block content %}
+<h1>Prize Rules: {{ game_name }}</h1>
+<p>
+    Main numbers: {{ rule.main_count }} (1–{{ rule.main_range }})
+    {% if rule.bonus_range %} | Bonus: 1 (1–{{ rule.bonus_range }}){% endif %}
+</p>
+
+<a href="{{ url_for('admin_dashboard') }}">← Back to Admin</a>
+
+<h2>Current Prize Rules</h2>
+
+{% if rows %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Main Matches</th>
+        {% if rule.bonus_range %}<th>Bonus Match</th>{% endif %}
+        <th>Prize</th>
+        <th>Actions</th>
+    </tr>
+    {% for row in rows %}
+    <tr>
+        <td>{{ row.main_matches }}</td>
+        {% if rule.bonus_range %}<td>{{ 'Yes' if row.bonus_match else 'No' }}</td>{% endif %}
+        <td>${{ "%.2f"|format(row.prize) }}</td>
+        <td>
+            <a href="{{ url_for('admin_edit_prize_rule', rule_id=row.id) }}">Edit Prize</a> |
+            <form method="POST" action="{{ url_for('admin_delete_prize_rule', rule_id=row.id) }}" style="display:inline;">
+                <button type="submit" onclick="return confirm('Delete this rule?');">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No prize rules yet.</p>
+{% endif %}
+
+<h2>Add Prize Rule</h2>
+<form method="POST">
+    <label>Main Matches (how many main numbers must match)</label>
+    <input type="number" name="main_matches" min="0" max="{{ rule.main_count }}" required>
+
+    {% if rule.bonus_range %}
+    <label>
+        <input type="checkbox" name="bonus_match"> Bonus ball must also match
+    </label>
+    {% endif %}
+
+    <label>Prize Amount ($)</label>
+    <input type="number" name="prize" step="0.01" min="0" placeholder="e.g. 1000000" required>
+
+    <button type="submit">Add Rule</button>
+</form>
+{% endblock %}
