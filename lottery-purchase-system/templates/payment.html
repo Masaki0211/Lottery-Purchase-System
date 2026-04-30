@@ -12,6 +12,7 @@
     <option value="credit">Credit Card</option>
     <option value="debit">Debit Card</option>
     <option value="paypal">PayPal</option>
+    <option value="venmo">Venmo</option>
 </select>
 
 <!-- Credit / Debit -->
@@ -38,11 +39,22 @@
     <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
 </form>
 
+<!-- Venmo -->
+<form method="POST" action="{{ url_for('payment') }}" id="venmo_form" style="display:none;">
+    <input type="hidden" name="payment_method" value="Venmo">
+    <label>Venmo Username (e.g. @username)</label>
+    <input type="text" name="venmo_username" placeholder="@username">
+    <label>Phone Number linked to Venmo</label>
+    <input type="text" name="venmo_phone" placeholder="555-123-4567">
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
+</form>
+
 <script>
     function showForm() {
         const val = document.getElementById('method_select').value;
         document.getElementById('card_form').style.display = (val === 'credit' || val === 'debit') ? 'flex' : 'none';
         document.getElementById('paypal_form').style.display = val === 'paypal' ? 'flex' : 'none';
+        document.getElementById('venmo_form').style.display = val === 'venmo' ? 'flex' : 'none';
         if (val === 'credit') document.getElementById('card_method_value').value = 'Credit Card';
         if (val === 'debit') document.getElementById('card_method_value').value = 'Debit Card';
     }

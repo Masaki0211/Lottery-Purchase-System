@@ -4,53 +4,31 @@
 
 {% block content %}
 <h1>Admin Dashboard</h1>
+
 <div style="margin: 16px 0; display: flex; gap: 10px;">
     <form method="POST" action="{{ url_for('generate_report') }}" style="display:inline;">
         <button type="submit">Generate Report</button>
     </form>
-    <a href="{{ url_for('view_report') }}">
-        <button type="button">View Latest Report</button>
-    </a>
+    <a href="{{ url_for('view_report') }}"><button type="button">View Latest Report</button></a>
+    <a href="{{ url_for('verify_ticket') }}"><button type="button">Verify Ticket</button></a>
 </div>
 
-<!-- Game Rules Section -->
-<h2>Game Rules</h2>
-<a href="{{ url_for('admin_add_game') }}">+ Add New Game</a>
-
-{% for gr in game_rules %}
-<div>
-    <h3>{{ gr.game_name }}</h3>
-    <p>Main: {{ gr.main_count }} numbers (1–{{ gr.main_range }})
-    {% if gr.bonus_range %} | Bonus: 1 number (1–{{ gr.bonus_range }}){% endif %}
-    </p>
-    <a href="{{ url_for('admin_prize_rules', game_name=gr.game_name) }}">Prize Rules</a> |
-    <a href="{{ url_for('admin_edit_game', game_name=gr.game_name) }}">Edit</a> |
-    <form method="POST" action="{{ url_for('admin_delete_game', game_name=gr.game_name) }}" style="display:inline;">
-        <button type="submit" onclick="return confirm('Delete game and all its prize rules?');">Delete Game</button>
-    </form>
-</div>
-<hr>
-{% endfor %}
-
-<!-- Ticket Types Section -->
 <h2>Ticket Types</h2>
 <a href="{{ url_for('admin_add_ticket') }}">+ Add New Ticket Type</a>
 
 {% for t in tickets %}
 <div>
     <h3>{{ t.game_name }}</h3>
-    <p>Price: ${{ t.price }} | Drawing: {{ t.drawing_date }} | Jackpot: ${{ t.prize_amount }}</p>
+    <p>Price: ${{ t.price }} | Drawing: {{ t.drawing_date }} | Jackpot: ${{ "%.2f"|format(t.prize_amount) }}</p>
     <p>Active: {{ 'Yes' if t.is_active else 'No' }}</p>
-    <p>Winning Numbers: {{ t.winning_numbers or 'Not yet drawn' }}
-    {% if t.winning_bonus %} | Bonus: {{ t.winning_bonus }}{% endif %}
-    </p>
+    <p>Winning Numbers: {{ t.winning_numbers or 'Not yet drawn' }}</p>
 
     <form method="POST" action="{{ url_for('finalize_drawing', ticket_type_id=t.id) }}" style="display:inline;">
-        <button type="submit" onclick="return confirm('Finalize drawing?');">Finalize Drawing</button>
+        <button type="submit" onclick="return confirm('Finalize drawing for {{ t.game_name }}?');">Finalize Drawing</button>
     </form>
     <a href="{{ url_for('edit_ticket', ticket_id=t.id) }}">Edit</a>
     <form method="POST" action="{{ url_for('delete_ticket', ticket_id=t.id) }}" style="display:inline;">
-        <button type="submit" onclick="return confirm('Deactivate this ticket type?');">Remove</button>
+        <button type="submit" onclick="return confirm('Deactivate this ticket?');">Remove</button>
     </form>
 </div>
 <hr>

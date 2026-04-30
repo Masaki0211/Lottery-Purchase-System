@@ -2,14 +2,8 @@
 
 {% block content %}
 <h1>Purchase {{ ticket.game_name }}</h1>
-<p>Price: ${{ ticket.price }} | Drawing: {{ ticket.drawing_date }} | Jackpot: ${{ ticket.prize_amount }}</p>
-
-{% if rule %}
-<p>
-    Pick <strong>{{ rule.main_count }} numbers (1–{{ rule.main_range }})</strong>
-    {% if rule.bonus_range %} + <strong>1 Bonus Ball (1–{{ rule.bonus_range }})</strong>{% endif %}
-</p>
-{% endif %}
+<p>Price: ${{ ticket.price }} | Drawing: {{ ticket.drawing_date }} | Jackpot: ${{ "%.2f"|format(ticket.prize_amount) }}</p>
+<p>Pick 5 numbers (1–50)</p>
 
 <form method="POST" id="purchaseForm">
     <label>Quantity (max 10)</label>
@@ -29,10 +23,6 @@
 </form>
 
 <script>
-    const mainCount = {{ rule.main_count if rule else 5 }};
-    const mainRange = {{ rule.main_range if rule else 50 }};
-    const bonusRange = {{ rule.bonus_range if rule and rule.bonus_range else 'null' }};
-
     document.getElementById('quantity').addEventListener('change', () => {
         if (document.getElementById('selection_mode').value === 'manual') buildInputs();
     });
@@ -47,18 +37,13 @@
         const qty = parseInt(document.getElementById('quantity').value) || 1;
         const container = document.getElementById('manual_inputs');
         container.innerHTML = '';
-
         for (let i = 0; i < qty; i++) {
             const div = document.createElement('div');
-            div.style.marginBottom = '12px';
+            div.style.marginBottom = '10px';
             div.innerHTML = `
                 <strong>Ticket ${i + 1}</strong><br>
-                <label>Numbers (${mainCount} numbers, 1–${mainRange}, comma separated)</label><br>
-                <input type="text" name="manual_numbers_${i}" placeholder="e.g. 1,2,3,4,5,6" required style="width:300px;">
-                ${bonusRange ? `
-                <br><label>Bonus Ball (1–${bonusRange})</label><br>
-                <input type="number" name="manual_bonus_${i}" min="1" max="${bonusRange}" placeholder="e.g. 14" required>
-                ` : ''}
+                <label>5 numbers (1–50, comma separated)</label><br>
+                <input type="text" name="manual_numbers_${i}" placeholder="e.g. 3,7,15,28,44" required>
             `;
             container.appendChild(div);
         }

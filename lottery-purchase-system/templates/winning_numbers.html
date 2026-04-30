@@ -5,21 +5,62 @@
 {% block content %}
 <h1>Winning Numbers</h1>
 
-{% for game in games %}
+<!-- Last Week Results -->
+<h2>Last Week's Results</h2>
+{% if past_games %}
+    {% for game in past_games %}
     <div>
         <h3>{{ game.game_name }}</h3>
         <p>Drawing Date: {{ game.drawing_date }}</p>
         <p>Jackpot: ${{ "%.2f"|format(game.prize_amount) }}</p>
-
-        {% if game.winning_numbers %}
-            <p>Winning Numbers: {{ game.winning_numbers }}
-            {% if game.winning_bonus %} | Bonus: {{ game.winning_bonus }}{% endif %}
-            </p>
-        {% else %}
-            <p>Numbers not yet drawn.</p>
-        {% endif %}
+        <p>Winning Numbers: <strong>{{ game.winning_numbers }}</strong></p>
     </div>
     <hr>
-{% endfor %}
+    {% endfor %}
+{% else %}
+    <p>No past drawing results yet.</p>
+{% endif %}
+
+<!-- This Week -->
+<h2>This Week's Drawing</h2>
+{% if active_games %}
+    {% for game in active_games %}
+    <div>
+        <h3>{{ game.game_name }}</h3>
+        <p>Drawing Date: {{ game.drawing_date }}</p>
+        <p>Jackpot: ${{ "%.2f"|format(game.prize_amount) }}</p>
+        <p>Numbers not yet drawn.</p>
+    </div>
+    <hr>
+    {% endfor %}
+{% else %}
+    <p>No active drawings this week.</p>
+{% endif %}
+
+<!-- Check Your Ticket -->
+<h2>Check Your Ticket</h2>
+<p>Enter your confirmation number to see if you won.</p>
+
+<form method="POST" action="{{ url_for('check_ticket') }}">
+    <input type="text" name="confirmation_number" placeholder="Confirmation number"
+           maxlength="10" required value="{{ check_confirmation or '' }}">
+    <button type="submit">Check</button>
+</form>
+
+{% if check_result %}
+    {% if check_result.is_winner %}
+        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong>
+        for <strong>{{ check_result.game_name }}</strong> is a WINNER!
+        Matches: {{ check_result.match_count }} |
+        Prize: ${{ "%.2f"|format(check_result.winning_amount) }} |
+        Claim status: {{ check_result.claim_status }}</p>
+    {% else %}
+        <p>Ticket <strong>{{ check_result.confirmation_number }}</strong>
+        ({{ check_result.game_name }}) — not a winner.
+        Matches: {{ check_result.match_count }}</p>
+    {% endif %}
+{% elif check_error %}
+    <p style="color:red;">{{ check_error }}</p>
+{% endif %}
 
 {% endblock %}
