@@ -14,21 +14,25 @@
 
 <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
 
+    {% if session.get('role') != 'admin' %}
     <a href="{{ url_for('tickets') }}">
         <button style="padding: 15px; min-width: 200px;">Browse Tickets</button>
     </a>
-
-    <a href="{{ url_for('orders') }}">
-        <button style="padding: 15px; min-width: 200px;">Order History</button>
-    </a>
-
+    {% endif %}
+    {% if session.get('role') != 'admin' %}
+        <a href="{{ url_for('orders') }}">
+            <button style="padding: 15px; min-width: 200px;">Order History</button>
+        </a>
+    {% endif %}
     <a href="{{ url_for('winning_numbers') }}">
         <button style="padding: 15px; min-width: 200px;">Winning Numbers</button>
     </a>
 
-    <a href="{{ url_for('search') }}">
-        <button style="padding: 15px; min-width: 200px;">Search Tickets</button>
-    </a>
+    {% if session.get('role') != 'admin' %}
+        <a href="{{ url_for('search') }}">
+            <button style="padding: 15px; min-width: 200px;">Search Tickets</button>
+        </a>
+    {% endif %}
 
     <a href="{{ url_for('profile') }}">
         <button style="padding: 15px; min-width: 200px;">Profile</button>
