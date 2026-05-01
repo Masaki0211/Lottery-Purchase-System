@@ -1,0 +1,26 @@
+Once you have downloaded the final versions of all files, initialize the database one last time.
+Set yourself as admin again.
+Then you can remove the "home" page that has the initialize database button.
+This page is not needed for the video demonstration, and no further .sql edits will be made.
+
+First step: 
+Go into app.py
+Find these lines:
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+And replace it with this:
+
+@app.route("/")
+def index():
+    if "user_id" in session:
+        return redirect(url_for("dashboard"))
+    return redirect(url_for("login"))
+
+Second step:
+Go to the base.html file
+Find this line and delete it
+
+<a href="{{ url_for('index') }}">Home</a>
