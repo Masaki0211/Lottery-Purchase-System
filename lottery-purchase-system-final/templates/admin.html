@@ -24,7 +24,7 @@
 <a href="{{ url_for('add_ticket') }}">+ Add New Ticket Type</a>
 
 {% for t in tickets %}
-    <div>
+    <div class="card">
         <h3>{{ t.game_name }}</h3>
 
         <p>Price: ${{ "%.2f"|format(t.price) }}</p>
