@@ -308,6 +308,10 @@ def profile():
 @app.route("/tickets")
 @login_required
 def tickets():
+    if session.get("role") == "admin":
+        flash("Admins cannot access ticket purchasing.")
+        return redirect(url_for("admin_dashboard"))
+
     db = get_db()
     tickets = db.execute("""
         SELECT * FROM ticket_types
@@ -320,6 +324,10 @@ def tickets():
 @app.route("/purchase/<int:ticket_type_id>", methods=["GET", "POST"])
 @login_required
 def purchase(ticket_type_id):
+    if session.get("role") == "admin":
+        flash("Admins are not allowed to purchase tickets.")
+        return redirect(url_for("admin_dashboard"))
+    
     db = get_db()
 
     ticket_type = db.execute(
