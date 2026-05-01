@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }}'s Profile{% endblock %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}'s Profile</title>
+</head>
+<body>
+
+    <h1>User Profile {{ username }}</h1>
+
+    <p><strong>Name:</strong> {{ user.name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Phone:</strong> {{ user.phone }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <p><strong>Date Of Birth:</strong> {{ user.dob }}</p>
+</body>
+</html>
+
+{% endblock %}  

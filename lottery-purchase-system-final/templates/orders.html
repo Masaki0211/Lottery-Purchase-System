@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Order History{% endblock %}
+
+{% block content %}
+<h1>Your Orders</h1>
+
+{% if not orders %}
+    <p>You have not purchased any tickets yet.</p>
+{% endif %}
+
+{% for order in orders %}
+    <div>
+        <h3>Order #{{ order.id }}</h3>
+        <p>Date: {{ order.order_date }}</p>
+        <p>Total: ${{ "%.2f"|format(order.total_amount) }}</p>
+    </div>
+
+    <ul>
+    {% for ticket in tickets %}
+        {% if ticket.order_id == order.id %}
+            <li>
+                <strong>{{ ticket.game_name }}</strong><br>
+                Numbers: {{ ticket.selected_numbers }}<br>
+                Confirmation: {{ ticket.confirmation_number }}<br>
+
+                {% if ticket.result_status == 'pending_drawing' %}
+                    <strong>Status: Pending Drawing</strong>
+
+                {% elif ticket.result_status == 'winning' %}
+                    <strong>WINNER!</strong><br>
+                    Matches: {{ ticket.match_count }}<br>
+                    Prize: ${{ "%.2f"|format(ticket.winning_amount) }}<br>
+
+                    {% if ticket.claim_status == 'not_claimed' %}
+                        <a href="{{ url_for('claim_ticket', ticket_id=ticket.id) }}">
+                            <button type="button">Claim Prize</button>
+                        </a>
+                    {% else %}
+                        <strong>✓ Claimed</strong>
+                        {% if ticket.claim_method %}
+                            via {{ ticket.claim_method }}
+                        {% endif %}
+                        {% if ticket.claim_date %}
+                            on {{ ticket.claim_date }}
+                        {% endif %}
+                    {% endif %}
+
+                {% else %}
+                    <strong>Not a winner</strong><br>
+                    Matches: {{ ticket.match_count }}
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+
+    <hr>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Add Ticket Type{% endblock %}
+
+{% block content %}
+<h1>Add Ticket Type</h1>
+
+<form method="POST">
+    <label>Game Name</label>
+    <input type="text" name="game_name" placeholder="e.g. Power Ball" required>
+
+    <label>Ticket Price ($)</label>
+    <input type="number" name="price" step="0.01" min="0" placeholder="e.g. 2.00" required>
+
+    <label>Drawing Date</label>
+    <input type="date" name="drawing_date" required>
+
+    <label>Jackpot Amount ($)</label>
+    <input type="number" name="prize_amount" step="0.01" min="0" placeholder="e.g. 1000000" required>
+
+    <button type="submit">Add Ticket Type</button>
+</form>
+
+<a href="{{ url_for('admin_dashboard') }}">← Back</a>
+{% endblock %}

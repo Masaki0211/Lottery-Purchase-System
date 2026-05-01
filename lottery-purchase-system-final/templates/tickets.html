@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Available Lottery Tickets</h1>
+
+{% for ticket in tickets %}
+    <div>
+        <h3>{{ ticket.game_name }}</h3>
+        <p>Price: ${{ ticket.price }}</p>
+        <p>Drawing Date: {{ ticket.drawing_date }}</p>
+        <a href="{{ url_for('purchase', ticket_type_id=ticket.id) }}">
+            Buy Ticket
+        </a>
+    </div>
+    <hr>
+{% endfor %}
+{% endblock %}

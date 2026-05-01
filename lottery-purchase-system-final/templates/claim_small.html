@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Instant Prize Claim</h2>
+<p>Total Prize: ${{ ticket.winning_amount }}</p>
+<p>Net Amount (after 24% federal tax): <strong>${{ "%.2f"|format(ticket.winning_amount * 0.76) }}</strong></p>
+
+<form method="POST">
+    <label>Select Your Payout Method:</label>
+    <select name="payment_method" required>
+        <option value="Venmo">Venmo</option>
+        <option value="PayPal">PayPal</option>
+        <option value="Bank Account">Direct Deposit (Account Number)</option>
+    </select>
+    <button type="submit">Confirm Instant Payout</button>
+</form>
+{% endblock %}

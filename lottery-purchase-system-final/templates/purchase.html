@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Purchase Ticket{% endblock %}
+
+{% block content %}
+<h1>Purchase {{ ticket.game_name }}</h1>
+
+<p>
+    Price: ${{ "%.2f"|format(ticket.price) }} |
+    Drawing: {{ ticket.drawing_date }} |
+    Jackpot: ${{ "%.2f"|format(ticket.prize_amount) }}
+</p>
+
+<p>Pick 5 numbers from 1–50.</p>
+
+<form method="POST" id="purchaseForm">
+    <label>Quantity (max 10)</label>
+    <input type="number" name="quantity" id="quantity" min="1" max="10" value="1" required>
+
+    <label>Selection Mode</label>
+    <select name="selection_mode" id="selection_mode" onchange="toggleManual()" required>
+        <option value="auto">Auto (Random)</option>
+        <option value="manual">Manual (Pick Numbers)</option>
+    </select>
+
+    <div id="manual_section" style="display:none;">
+        <p>Enter 5 unique numbers between 1 and 50 for each ticket.</p>
+        <div id="manual_inputs"></div>
+    </div>
+
+    <button type="submit">Continue to Payment</button>
+</form>
+
+<script>
+    document.getElementById('quantity').addEventListener('change', () => {
+        if (document.getElementById('selection_mode').value === 'manual') {
+            buildInputs();
+        }
+    });
+
+    function toggleManual() {
+        const isManual = document.getElementById('selection_mode').value === 'manual';
+        document.getElementById('manual_section').style.display = isManual ? 'block' : 'none';
+
+        if (isManual) {
+            buildInputs();
+        }
+    }
+
+    function buildInputs() {
+        const qty = parseInt(document.getElementById('quantity').value) || 1;
+        const container = document.getElementById('manual_inputs');
+
+        container.innerHTML = '';
+
+        for (let i = 0; i < qty; i++) {
+            const div = document.createElement('div');
+            div.style.marginBottom = '10px';
+
+            div.innerHTML = `
+                <strong>Ticket ${i + 1}</strong><br>
+                <label>5 numbers, comma separated</label><br>
+                <input type="text" name="manual_numbers_${i}" placeholder="Example: 3,7,15,28,44" required>
+            `;
+
+            container.appendChild(div);
+        }
+    }
+</script>
+{% endblock %}

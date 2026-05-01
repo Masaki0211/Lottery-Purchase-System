@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+nav {
+    background: #222;
+    padding: 12px 20px;
+}
+
+nav a {
+    color: white;
+    margin-right: 16px;
+    text-decoration: none;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: white;
+    padding: 24px;
+    border-radius: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    cursor: pointer;
+}
+
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.flash-messages li {
+    background: #e7f3ff;
+    border: 1px solid #b6d4fe;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.winner-alert {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    color: #664d03;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-weight: bold;
+}
+
+.claim-code-box {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border: 2px dashed #222;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    background: #f8f8f8;
+}
+
+.dashboard-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.dashboard-card {
+    display: block;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    min-width: 200px;
+    transition: 0.2s;
+}
+
+.dashboard-card:hover {
+    background-color: #ddd;
+}

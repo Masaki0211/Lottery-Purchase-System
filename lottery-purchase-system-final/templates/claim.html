@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Claim Prize{% endblock %}
+
+{% block content %}
+<h1>Claim Prize</h1>
+
+<h2>{{ ticket.game_name }}</h2>
+
+<p><strong>Ticket Numbers:</strong> {{ ticket.selected_numbers }}</p>
+<p><strong>Confirmation Number:</strong> {{ ticket.confirmation_number }}</p>
+<p><strong>Winning Amount:</strong> ${{ ticket.winning_amount }}</p>
+
+{% if claim_type == "online" %}
+    <h3>Online Claim Available</h3>
+    <p>This prize is under $599, so it can be claimed online.</p>
+
+    <form method="POST">
+        <label>Select Payout Method</label>
+        <select name="payout_method" required>
+            <option value="">-- Select --</option>
+            <option value="Venmo">Venmo</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Bank Account">Bank Account</option>
+        </select>
+        
+        <button type="submit">Claim Prize</button>
+    </form>
+    <p>Select how you would like to receive your winnings.</p>
+{% else %}
+    <h3>Claim Center Required</h3>
+    <p>This prize is $599 or more, so it must be claimed in person at a lottery claim center.</p>
+
+    <p>Bring this claim code and a valid ID to the nearest claim center:</p>
+
+    <div class="claim-code-box">
+        {{ ticket.claim_code }}
+    </div>
+
+    <p><strong>Status:</strong> Waiting for in-person claim verification.</p>
+{% endif %}
+
+<a href="{{ url_for('orders') }}">Back to Order History</a>
+{% endblock %}

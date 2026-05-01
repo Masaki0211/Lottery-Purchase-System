@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<h1>Payment</h1>
+<p>Total: ${{ "%.2f"|format(total_amount) }}</p>
+
+<label>Payment Method</label>
+<select id="method_select" onchange="showForm()" required>
+    <option value="">-- Select --</option>
+    <option value="credit">Credit Card</option>
+    <option value="debit">Debit Card</option>
+    <option value="paypal">PayPal</option>
+    <option value="venmo">Venmo</option>
+</select>
+
+<!-- Credit / Debit -->
+<form method="POST" action="{{ url_for('payment') }}" id="card_form" style="display:none;">
+    <input type="hidden" name="payment_method" id="card_method_value">
+
+    <label>Card Number</label>
+    <input type="text" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+
+    <label>Expiry (MM/YY)</label>
+    <input type="text" name="expiry" placeholder="MM/YY" maxlength="5" required>
+
+    <label>CVV</label>
+    <input type="text" name="cvv" placeholder="123" maxlength="3" required>
+
+    <label>Cardholder Name</label>
+    <input type="text" name="card_name" placeholder="John Doe" required>
+
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
+</form>
+
+<!-- PayPal -->
+<form method="POST" action="{{ url_for('payment') }}" id="paypal_form" style="display:none;">
+    <input type="hidden" name="payment_method" value="PayPal">
+
+    <label>PayPal Email</label>
+    <input type="email" name="paypal_email" placeholder="you@example.com" required>
+
+    <label>Password</label>
+    <input type="password" name="paypal_password" placeholder="PayPal password" required>
+
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
+</form>
+
+<!-- Venmo -->
+<form method="POST" action="{{ url_for('payment') }}" id="venmo_form" style="display:none;">
+    <input type="hidden" name="payment_method" value="Venmo">
+
+    <label>Venmo Username</label>
+    <input type="text" name="venmo_username" placeholder="@username" required>
+
+    <label>Phone Number linked to Venmo</label>
+    <input type="text" name="venmo_phone" placeholder="555-123-4567" required>
+
+    <button type="submit">Pay ${{ "%.2f"|format(total_amount) }}</button>
+</form>
+
+<script>
+    function showForm() {
+        const val = document.getElementById('method_select').value;
+
+        const cardForm = document.getElementById('card_form');
+        const paypalForm = document.getElementById('paypal_form');
+        const venmoForm = document.getElementById('venmo_form');
+        const cardMethodValue = document.getElementById('card_method_value');
+
+        cardForm.style.display = (val === 'credit' || val === 'debit') ? 'flex' : 'none';
+        paypalForm.style.display = val === 'paypal' ? 'flex' : 'none';
+        venmoForm.style.display = val === 'venmo' ? 'flex' : 'none';
+
+        if (val === 'credit') {
+            cardMethodValue.value = 'Credit Card';
+        } else if (val === 'debit') {
+            cardMethodValue.value = 'Debit Card';
+        } else {
+            cardMethodValue.value = '';
+        }
+    }
+</script>
+{% endblock %}

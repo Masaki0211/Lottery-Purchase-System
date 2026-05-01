@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Home - LPS{% endblock %}
+
+{% block content %}
+    <h1>Texas Lottery Purchase System</h1>
+    <p>
+        First-time setup:
+        <a href="{{ url_for('initialize_database') }}">Initialize Database</a>
+    </p>
+{% endblock %}

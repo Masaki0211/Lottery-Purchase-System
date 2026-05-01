@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Ticket Type{% endblock %}
+
+{% block content %}
+<h1>Edit Ticket: {{ ticket.game_name }}</h1>
+
+<form method="POST">
+
+    <label>Ticket Price ($)</label>
+    <input type="number" name="price" step="0.01" value="{{ ticket.price }}" required>
+
+    <label>Drawing Date</label>
+    <input type="date" name="drawing_date" value="{{ ticket.drawing_date }}" required>
+
+    <label>Jackpot Amount ($)</label>
+    <input type="number" name="prize_amount" step="0.01" value="{{ ticket.prize_amount }}" required>
+
+    <label>Active</label>
+    <select name="is_active">
+        <option value="1" {% if ticket.is_active %}selected{% endif %}>Yes</option>
+        <option value="0" {% if not ticket.is_active %}selected{% endif %}>No</option>
+    </select>
+
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a href="{{ url_for('admin_dashboard') }}">← Back</a>
+
+{% endblock %}
