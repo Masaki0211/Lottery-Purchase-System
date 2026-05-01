@@ -7,41 +7,49 @@
 <h1>Welcome, {{ user_name }}!</h1>
 
 {% if winning_count > 0 %}
-    <p style="color: green; font-weight: bold;">
+    <div class="winner-alert">
         You have {{ winning_count }} unclaimed winning ticket(s)!
-    </p>
+    </div>
 {% endif %}
 
-<div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+<div class="dashboard-grid">
 
     {% if session.get('role') != 'admin' %}
-    <a href="{{ url_for('tickets') }}">
-        <button style="padding: 15px; min-width: 200px;">Browse Tickets</button>
-    </a>
-    {% endif %}
-    {% if session.get('role') != 'admin' %}
-        <a href="{{ url_for('orders') }}">
-            <button style="padding: 15px; min-width: 200px;">Order History</button>
+        <a href="{{ url_for('tickets') }}" class="dashboard-card">
+            Browse Tickets
         </a>
-    {% endif %}
-    <a href="{{ url_for('winning_numbers') }}">
-        <button style="padding: 15px; min-width: 200px;">Winning Numbers</button>
-    </a>
 
-    {% if session.get('role') != 'admin' %}
-        <a href="{{ url_for('search') }}">
-            <button style="padding: 15px; min-width: 200px;">Search Tickets</button>
+        <a href="{{ url_for('orders') }}" class="dashboard-card">
+            Order History
         </a>
     {% endif %}
 
-    <a href="{{ url_for('profile') }}">
-        <button style="padding: 15px; min-width: 200px;">Profile</button>
+    <a href="{{ url_for('winning_numbers') }}" class="dashboard-card">
+        Winning Numbers
+    </a>
+
+    {% if session.get('role') != 'admin' %}
+        <a href="{{ url_for('search') }}" class="dashboard-card">
+            Search Tickets
+        </a>
+    {% endif %}
+
+    <a href="{{ url_for('profile') }}" class="dashboard-card">
+        Profile
     </a>
 
     {% if session.get('role') == 'admin' %}
-    <a href="{{ url_for('admin_dashboard') }}">
-        <button style="padding: 15px; min-width: 200px;">Admin Panel</button>
-    </a>
+        <a href="{{ url_for('admin_dashboard') }}" class="dashboard-card">
+            Admin Panel
+        </a>
+
+        <a href="{{ url_for('verify_ticket') }}" class="dashboard-card">
+            Verify Ticket
+        </a>
+
+        <a href="{{ url_for('view_report') }}" class="dashboard-card">
+            View Reports
+        </a>
     {% endif %}
 
 </div>
