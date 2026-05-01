@@ -9,7 +9,7 @@
 <h2>Last Week's Results</h2>
 {% if past_games %}
     {% for game in past_games %}
-    <div>
+    <div class="card">
         <h3>{{ game.game_name }}</h3>
         <p>Drawing Date: {{ game.drawing_date }}</p>
         <p>Jackpot: ${{ "%.2f"|format(game.prize_amount) }}</p>
@@ -25,7 +25,7 @@
 <h2>This Week's Drawing</h2>
 {% if active_games %}
     {% for game in active_games %}
-    <div>
+    <div class="card">
         <h3>{{ game.game_name }}</h3>
         <p>Drawing Date: {{ game.drawing_date }}</p>
         <p>Jackpot: ${{ "%.2f"|format(game.prize_amount) }}</p>
