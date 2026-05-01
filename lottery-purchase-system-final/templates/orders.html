@@ -10,7 +10,7 @@
 {% endif %}
 
 {% for order in orders %}
-    <div>
+    <div class="card">
         <h3>Order #{{ order.id }}</h3>
         <p>Date: {{ order.order_date }}</p>
         <p>Total: ${{ "%.2f"|format(order.total_amount) }}</p>
@@ -19,7 +19,7 @@
     <ul>
     {% for ticket in tickets %}
         {% if ticket.order_id == order.id %}
-            <li>
+            <li class="card">
                 <strong>{{ ticket.game_name }}</strong><br>
                 Numbers: {{ ticket.selected_numbers }}<br>
                 Confirmation: {{ ticket.confirmation_number }}<br>
