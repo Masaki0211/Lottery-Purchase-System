@@ -16,11 +16,16 @@
         <a href="{{ url_for('dashboard') }}">Dashboard</a>
         <a href="{{ url_for('profile') }}">Profile</a>
         <a href="{{ url_for('winning_numbers') }}">Winning Numbers</a>
-        <a href="{{ url_for('tickets') }}">Browse Tickets</a>
-        <a href="{{ url_for('orders') }}">Order History</a>
-        <a href="{{ url_for('search') }}">Search</a>
+        {% if session.get('role') != 'admin' %}
+            <a href="{{ url_for('tickets') }}">Browse Tickets</a>
+        {% endif %}
+        {% if session.get('role') != 'admin' %}
+            <a href="{{ url_for('orders') }}">Order History</a>
+        {% endif %}
+        {% if session.get('role') != 'admin' %}
+            <a href="{{ url_for('search') }}">Search</a>
+        {% endif %}
         <a href="{{ url_for('logout') }}">Logout</a>
-
         {% if session.get('role') == 'admin' %}
             <a href="{{ url_for('admin_dashboard') }}">Admin</a>
         {% endif %}
