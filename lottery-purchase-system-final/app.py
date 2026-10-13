@@ -294,10 +294,27 @@ def dashboard():
     )
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
     db = get_db()
+
+    if request.method == "POST":
+        address = request.form.get("address", "").strip()
+
+        if not address:
+            flash("Address cannot be empty.")
+            return redirect(url_for("profile"))
+
+        db.execute(
+            "UPDATE users SET address = ? WHERE id = ?",
+            (address, session["user_id"])
+        )
+        db.commit()
+
+        flash("Address updated successfully.")
+        return redirect(url_for("profile"))
+
     user = db.execute(
         "SELECT * FROM users WHERE id = ?",
         (session["user_id"],)
